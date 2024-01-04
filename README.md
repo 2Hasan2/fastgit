@@ -55,3 +55,25 @@ The purpose of this function is to simplify and expedite common Git operations s
   <pre><code>source ~/.zshrc</code></pre>
 </body>
 
+
+## New Features
+
+### 1. Automatic Commit Message
+
+If no commit message is provided, the script defaults to using the current date and time as the commit message.
+
+### 2. Customizable Remote and Branch
+
+You can specify the remote and branch for pushing changes, providing flexibility in managing repositories.
+
+```bash
+fastgit "Commit Message" [remote] [branch]
+```
+
+### 3. Fetch and Rebase
+
+The script fetches remote commits before adding and committing local changes. It then rebases your local changes on top of the fetched commits, helping to resolve conflicts if any.
+
+### 4. Loading Spinner Animation
+
+The script includes a loading spinner animation during the fetch and rebase operations, providing visual feedback to the user.

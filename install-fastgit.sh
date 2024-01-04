@@ -28,6 +28,7 @@ spinner() {
     local pid=\$1
     local delay=0.25
     local spinstr='|/-\\'
+    tput civis
     while [ -d \"/proc/\$pid\" ]; do
         local temp=\$spinstr
         spinstr=\$(echo \$spinstr | sed 's/.\(.*\)/\1/')
@@ -35,6 +36,7 @@ spinner() {
         sleep \$delay
         printf \"\\b\\b\\b\"
     done
+    tput cnorm
     printf \"   \\b\\b\\b\"
 }
 

@@ -89,8 +89,6 @@ ${TOOL_NAME}() {
             echo -e "${COLOR_YELLOW}Done${COLOR_RESET}\n"
         fi
     fi
-    spinner \$!
-    wait \$!
 
     # Push changes
     git push \"\$remote\" \"\$branch\" > /dev/null 2>&1

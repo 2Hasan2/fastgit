@@ -57,7 +57,7 @@ ${TOOL_NAME}() {
     git commit -m \"\$commit_message\"
 
     # Rebase with the loading spinner
-    echo -e -n \"${COLOR_YELLOW}Rebasing changes ${COLOR_RESET}\"
+    echo -e -n \"${COLOR_YELLOW}Rebasing changes ${COLOR_RESET}\n\"
 
     # Rebase without the loading spinner
     git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1

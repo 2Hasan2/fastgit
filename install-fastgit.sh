@@ -39,13 +39,13 @@ ${TOOL_NAME}() {
             git clone \"\$repo_url\" .
             printf \"\n\"
             ;;
-        *)
-            if [ -z \"\$1\" ]; then
+        \"clone\")
+            if [ -z \"\$2\" ]; then
                 echo -e \"${COLOR_RED}Please provide a commit message.${COLOR_RESET}\"
                 return 1
             fi
 
-            commit_message=\"\$1\"
+            commit_message=\"\$2\"
 
             # Check if the current directory is a Git repository
             if [ ! -e \".git\" ]; then
@@ -90,6 +90,10 @@ ${TOOL_NAME}() {
             # Push changes
             git push origin main > /dev/null 2>&1
             echo -e \"${COLOR_GREEN}Changes successfully pushed to origin/main.${COLOR_RESET}\n\"
+            ;;
+        *)
+            echo -e \"${COLOR_RED}Invalid command. Use 'clone' for cloning a repository or provide a commit message.${COLOR_RESET}\"
+            return 1
             ;;
     esac
 }

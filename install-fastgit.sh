@@ -23,6 +23,21 @@ fi
 
 # Define the function
 FASTGIT_FUNCTION="
+# Spinner function
+spinner() {
+    local pid=\$1
+    local delay=0.25
+    local spinstr='|/-\\'
+    while [ -d \"/proc/\$pid\" ]; do
+        local temp=\$spinstr
+        spinstr=\$(echo \$spinstr | sed 's/.\(.*\)/\1/')
+        printf \"[%c]\" \"\$temp\"
+        sleep \$delay
+        printf \"\\b\\b\\b\"
+    done
+    printf \"   \\b\\b\\b\"
+}
+
 # ${TOOL_NAME} function
 ${TOOL_NAME}() {
     if [ -z \"\$1\" ]; then
@@ -57,10 +72,10 @@ ${TOOL_NAME}() {
     git commit -m \"\$commit_message\"
 
     # Rebase with the loading spinner
-    echo -e -n \"${COLOR_YELLOW}Rebasing changes ${COLOR_RESET}\n\"
-
-    # Rebase without the loading spinner
-    git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1
+    echo -n \"${COLOR_YELLOW}Rebasing changes ${COLOR_RESET}\"
+    git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1 &
+    spinner \$!
+    wait \$!
 
     # Check if there were conflicts during rebase
     if [ $? -eq 0 ]; then
@@ -80,6 +95,7 @@ ${TOOL_NAME}() {
     echo -e \"${COLOR_GREEN}Changes successfully pushed to \$remote/\$branch.${COLOR_RESET}\n\"
 }
 "
+
 
 # Append the function definition to the configuration file
 echo "$FASTGIT_FUNCTION" >> "$CONFIG_FILE"

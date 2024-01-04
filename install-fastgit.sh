@@ -21,29 +21,6 @@ else
     exit 1
 fi
 
-# Define the spinner function
-spinner() {
-    local pid=$1
-    local delay=0.1
-    local spinstr='|/-\'
-
-    # Hide the cursor
-    tput civis
-
-    while ps -p $pid > /dev/null; do
-        local temp=${spinstr#?}
-        printf " [%c] " "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\b\b\b\b\b\b"
-    done
-
-    # Show the cursor again
-    tput cnorm
-
-    printf "    \b\b\b\b"
-}
-
 # Define the function
 FASTGIT_FUNCTION="
 # ${TOOL_NAME} function
@@ -81,13 +58,6 @@ ${TOOL_NAME}() {
 
     # Rebase with the loading spinner
     echo -e -n \"${COLOR_YELLOW}Rebasing changes ${COLOR_RESET}\"
-    sleep 0.1 &
-
-    # Get the process ID of the last background command
-    pid=\$!
-
-    # Call the spinner function with the process ID
-    spinner \$pid
 
     # Rebase without the loading spinner
     git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1

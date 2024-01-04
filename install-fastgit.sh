@@ -26,7 +26,7 @@ FASTGIT_FUNCTION="
 # Spinner function
 spinner() {
     local pid=\$1
-    local delay=0.05
+    local delay=0.1
     local spinstr='|/-\\'
     tput civis
     while [ -d \"/proc/\$pid\" ]; do

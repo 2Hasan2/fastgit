@@ -77,8 +77,7 @@ ${TOOL_NAME}() {
     git commit -m \"\$commit_message\"
 
     # Rebase with the loading spinner
-    (git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1) &
-    show_loader
+    (git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1 && show_loader) &
 
     # Check if there were conflicts during rebase
     if [ $? -eq 0 ]; then
@@ -94,8 +93,7 @@ ${TOOL_NAME}() {
     fi
 
     # Push changes
-    (git push \"\$remote\" \"\$branch\" > /dev/null 2>&1) &
-    show_loader
+    (git push \"\$remote\" \"\$branch\" > /dev/null 2>&1 && show_loader)
     
     echo -e \"${COLOR_GREEN}Changes successfully pushed to \$remote/\$branch.${COLOR_RESET}\n\"
 }

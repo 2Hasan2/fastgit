@@ -29,6 +29,9 @@ function show_loader {
     echo -e "Done"
 }
 
+# Export the loader function for use in background processes
+export -f show_loader
+
 # Check the shell type and determine the configuration file
 if [ -n "$BASH_VERSION" ]; then
     CONFIG_FILE=~/.bashrc

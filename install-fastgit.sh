@@ -42,6 +42,16 @@ spinner() {
 
 # ${TOOL_NAME} function
 ${TOOL_NAME}() {
+    if [ \"\$1\" == \"clone\" ]; then
+        if [ -z \"\$2\" ]; then
+            echo -e \"${COLOR_RED}Please provide a repository URL to clone.${COLOR_RESET}\"
+            return 1
+        else
+            git clone \"\$2\"
+            return \$?
+        fi
+    fi
+
     if [ -z \"\$1\" ]; then
         commit_message=\"\$(date +'%Y-%m-%d %I:%M %p')\"
     else
@@ -80,7 +90,7 @@ ${TOOL_NAME}() {
     wait \$!
 
     # Check if there were conflicts during rebase
-    if [ $? -eq 0 ]; then
+    if [ \$? -eq 0 ]; then
         echo -e \"${COLOR_GREEN}Changes successfully rebased with remote commits.${COLOR_RESET}\n\"
     else
         echo -e \"${COLOR_RED}Failed to rebase changes. Resolve conflicts.${COLOR_RESET}\n\"
@@ -88,7 +98,7 @@ ${TOOL_NAME}() {
         if [ -n \"\$(git status --porcelain | grep '^UU')\" ]; then
             echo -n -e \"${COLOR_YELLOW}Fetching remote commits...${COLOR_RESET}\t\"
             git fetch \"\$remote\" \"\$branch\" >/dev/null 2>&1
-            echo -e "${COLOR_YELLOW}Done${COLOR_RESET}\n"
+            echo -e \"${COLOR_YELLOW}Done${COLOR_RESET}\n\"
         fi
     fi
 

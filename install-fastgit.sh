@@ -57,7 +57,7 @@ ${TOOL_NAME}() {
     git commit -m \"\$commit_message\"
 
     # Rebase with a loading spinner
-    echo -e -n \"${COLOR_YELLOW}Rebasing with remote commits.${COLOR_RESET} \"
+    echo -e -n \"${COLOR_YELLOW}Rebasing with remote commits.${COLOR_RESET} \n\"
     i=0 
     while kill -0 \$! >/dev/null 2>&1; do
         i=\$(( (i+1) % 4 ))

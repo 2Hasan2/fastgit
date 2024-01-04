@@ -79,9 +79,9 @@ ${TOOL_NAME}() {
     done
     printf \"\b\"
 
-    if git pull --rebase \"\$remote\" \"\$branch\"; then
+    if git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1; then
         echo -e \"${COLOR_GREEN}Changes successfully rebased with remote commits.${COLOR_RESET}\"
-        git push \"\$remote\" \"\$branch\"
+        git push \"\$remote\" \"\$branch\" > /dev/null 2>&1
         echo -e \"${COLOR_GREEN}Changes successfully pushed to \$remote/\$branch.${COLOR_RESET}\"
     else
         echo -e \"${COLOR_RED}Failed to rebase changes. Please resolve conflicts and try again.${COLOR_RESET}\"
@@ -95,4 +95,3 @@ echo "$FASTGIT_FUNCTION" >> "$CONFIG_FILE"
 
 # Inform the user about the changes
 echo -e "${COLOR_GREEN}${TOOL_NAME} function added to $CONFIG_FILE. Please reload your shell.${COLOR_RESET}"
-

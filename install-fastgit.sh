@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Define color codes
-COLOR_GREEN='\033[0;32m'
+COLOR_GREEN='\033[1;32m'
 COLOR_YELLOW='\033[1;33m'
-COLOR_RED='\033[0;31m'
+COLOR_RED='\033[1;31m'
 COLOR_RESET='\033[0m'
 
 # Define the tool name
@@ -31,11 +31,11 @@ spinner() {
     while [ -d \"/proc/\$pid\" ]; do
         local temp=\$spinstr
         spinstr=\$(echo \$spinstr | sed 's/.\(.*\)/\1/')
-        printf \"[%c]\" \"\$temp\"
+        echo -n \"[\$temp]\"
         sleep \$delay
-        printf \"\\b\\b\\b\"
+        echo -ne \"\\b\\b\\b\"
     done
-    printf \"   \\b\\b\\b\"
+    echo -e \"   \\b\\b\\b\"
 }
 
 # ${TOOL_NAME} function
@@ -72,7 +72,7 @@ ${TOOL_NAME}() {
     git commit -m \"\$commit_message\"
 
     # Rebase with the loading spinner
-    echo -n \"${COLOR_YELLOW}Rebasing changes ${COLOR_RESET}\"
+    echo -n -e \"${COLOR_YELLOW}Rebasing changes...${COLOR_RESET}\t\"
     git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1 &
     spinner \$!
     wait \$!
@@ -84,7 +84,7 @@ ${TOOL_NAME}() {
         echo -e \"${COLOR_RED}Failed to rebase changes. Resolve conflicts.${COLOR_RESET}\n\"
         # Fetch commits from the remote repository only if there was a conflict during rebase
         if [ -n \"\$(git status --porcelain | grep '^UU')\" ]; then
-            echo -e -n \"${COLOR_YELLOW}Fetching remote commits${COLOR_RESET} \"
+            echo -n -e \"${COLOR_YELLOW}Fetching remote commits...${COLOR_RESET}\t\"
             git fetch \"\$remote\" \"\$branch\" >/dev/null 2>&1
             echo -e "${COLOR_YELLOW}Done${COLOR_RESET}\n"
         fi
@@ -95,7 +95,6 @@ ${TOOL_NAME}() {
     echo -e \"${COLOR_GREEN}Changes successfully pushed to \$remote/\$branch.${COLOR_RESET}\n\"
 }
 "
-
 
 # Append the function definition to the configuration file
 echo "$FASTGIT_FUNCTION" >> "$CONFIG_FILE"

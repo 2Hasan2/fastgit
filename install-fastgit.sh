@@ -71,22 +71,20 @@ ${TOOL_NAME}() {
     if git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1; then
         echo -e \"${COLOR_GREEN}Changes successfully rebased with remote commits.${COLOR_RESET}\"
     else
-        echo -e \"${COLOR_RED}Failed to rebase changes. Please resolve conflicts and try again.${COLOR_RESET}\"
-        return 1
-    fi
-
-    # Fetch commits from the remote repository only if there was a conflict during rebase
-    if [ -n \"\$(git status --porcelain | grep '^UU')\" ]; then
-        echo -e -n \"${COLOR_YELLOW}Fetching remote commits${COLOR_RESET} \"
-        spin='-\|/'
-        i=0
-        git fetch \"\$remote\" \"\$branch\" >/dev/null 2>&1 &
-        while kill -0 \$! >/dev/null 2>&1; do
-            i=\$(( (i+1) % 4 ))
-            printf \"\b%s\" \"\${spin:\$i:1}\"
-            sleep 0.1
-        done
-        printf \"\b\"
+        echo -e \"${COLOR_RED}Failed to rebase changes. resolve conflicts.${COLOR_RESET}\"
+        # Fetch commits from the remote repository only if there was a conflict during rebase
+        if [ -n \"\$(git status --porcelain | grep '^UU')\" ]; then
+            echo -e -n \"${COLOR_YELLOW}Fetching remote commits${COLOR_RESET} \"
+            spin='-\|/'
+            i=0
+            git fetch \"\$remote\" \"\$branch\" >/dev/null 2>&1 &
+            while kill -0 \$! >/dev/null 2>&1; do
+                i=\$(( (i+1) % 4 ))
+                printf \"\b%s\" \"\${spin:\$i:1}\"
+                sleep 0.1
+            done
+            printf \"\b\"
+        fi
     fi
 
     # Push changes

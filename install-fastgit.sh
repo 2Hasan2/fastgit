@@ -58,7 +58,7 @@ ${TOOL_NAME}() {
 
     # Rebase with a loading spinner
     echo -e -n \"${COLOR_YELLOW}Rebasing with remote commits${COLOR_RESET} \"
-    i=0
+    i=0 &
     while kill -0 \$! >/dev/null 2>&1; do
         i=\$(( (i+1) % 4 ))
         printf \"\b%s\" \"\${spin:\$i:1}\"
@@ -87,7 +87,7 @@ ${TOOL_NAME}() {
     fi
 
     # Push changes
-    git push \"\$remote\" \"\$branch\" > /dev/null 2>&1
+    # git push \"\$remote\" \"\$branch\" > /dev/null 2>&1
     echo -e \"${COLOR_GREEN}Changes successfully pushed to \$remote/\$branch.${COLOR_RESET}\"
 }
 "

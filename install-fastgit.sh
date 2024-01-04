@@ -56,38 +56,24 @@ ${TOOL_NAME}() {
     git add .
     git commit -m \"\$commit_message\"
 
-    # Rebase with a loading spinner
-    echo -e -n \"${COLOR_YELLOW}Rebasing with remote commits.${COLOR_RESET} \n\"
-    i=0 
-    while kill -0 \$! >/dev/null 2>&1; do
-        i=\$(( (i+1) % 4 ))
-        printf \"\b%s\" \"\${spin:\$i:1}\"
-        sleep 0.1
-    done
-    printf \"\b\n\"
+    # Rebase without the loading spinner
+    git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1
 
     # Check if there were conflicts during rebase
-    if git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1; then
+    if [ $? -eq 0 ]; then
         echo -e \"${COLOR_GREEN}Changes successfully rebased with remote commits.${COLOR_RESET}\n\"
     else
         echo -e \"${COLOR_RED}Failed to rebase changes. Resolve conflicts.${COLOR_RESET}\n\"
         # Fetch commits from the remote repository only if there was a conflict during rebase
         if [ -n \"\$(git status --porcelain | grep '^UU')\" ]; then
             echo -e -n \"${COLOR_YELLOW}Fetching remote commits${COLOR_RESET} \"
-            spin='-\|/'
-            i=0
-            git fetch \"\$remote\" \"\$branch\" >/dev/null 2>&1 &
-            while kill -0 \$! >/dev/null 2>&1; do
-                i=\$(( (i+1) % 4 ))
-                printf \"\b%s\" \"\${spin:\$i:1}\"
-                sleep 0.1
-            done
-            printf \"\b\n\"
+            git fetch \"\$remote\" \"\$branch\" >/dev/null 2>&1
+            echo -e "${COLOR_YELLOW}Done${COLOR_RESET}\n"
         fi
     fi
 
     # Push changes
-    # git push \"\$remote\" \"\$branch\" > /dev/null 2>&1
+    git push \"\$remote\" \"\$branch\" > /dev/null 2>&1
     echo -e \"${COLOR_GREEN}Changes successfully pushed to \$remote/\$branch.${COLOR_RESET}\n\"
 }
 "

@@ -23,7 +23,7 @@ The purpose of this function is to simplify and expedite common Git operations s
   <h2>Installation</h2>
 
   <h3>Clone</h3>
-  <pre><code>git clone https://github.com/0xHemaSallam/fastgit.git</code></pre>
+  <pre><code>git clone https://github.com/2Hasan2/fastgit.git</code></pre>
   <pre><code>cd fastgit</code></pre>
 
   <h3>Bash</h3>

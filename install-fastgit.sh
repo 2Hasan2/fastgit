@@ -31,11 +31,11 @@ spinner() {
     while [ -d \"/proc/\$pid\" ]; do
         local temp=\$spinstr
         spinstr=\$(echo \$spinstr | sed 's/.\(.*\)/\1/')
-        echo -n \"[\$temp]\"
+        printf \"[%c]\" \"\$temp\"
         sleep \$delay
-        echo -ne \"\\b\\b\\b\"
+        printf \"\\b\\b\\b\"
     done
-    echo -e \"   \\b\\b\\b\"
+    printf \"   \\b\\b\\b\"
 }
 
 # ${TOOL_NAME} function

@@ -74,6 +74,7 @@ fastgit "Commit Message" [remote] [branch]
 
 The script fetches remote commits before adding and committing local changes. It then rebases your local changes on top of the fetched commits, helping to resolve conflicts if any.
 
+
 ### 4. Loading Spinner Animation
 
 The script includes a loading spinner animation during the fetch and rebase operations, providing visual feedback to the user.

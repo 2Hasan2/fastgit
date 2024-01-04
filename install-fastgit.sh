@@ -42,7 +42,7 @@ spinner() {
 
 # ${TOOL_NAME} function
 ${TOOL_NAME}() {
-    if [ $1 == "clone" ]; then
+    if [ \"$1\" == "clone" ]; then
         if [ -z \"\$2\" ]; then
             echo -e \"${COLOR_RED}Please provide a repository URL to clone.${COLOR_RESET}\"
             return 1

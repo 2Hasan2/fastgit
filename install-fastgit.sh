@@ -9,29 +9,6 @@ COLOR_RESET='\033[0m'
 # Define the tool name
 TOOL_NAME="fastgit"
 
-# Define the loader function
-function show_loader {
-    local pid=$!
-    local delay=0.2
-    local spin='-\|/'
-
-    echo -n "Loading... "
-    
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
-        local temp=${spin#?}
-        printf " [%c] " "$spin"
-        local spin=$temp${spin%"$temp"}
-        sleep $delay
-        printf "\b\b\b\b\b\b"
-    done
-    
-    printf "    \b\b\b\b"
-    echo -e "Done"
-}
-
-# Export the loader function for use in background processes
-export -f show_loader
-
 # Check the shell type and determine the configuration file
 if [ -n "$BASH_VERSION" ]; then
     CONFIG_FILE=~/.bashrc
@@ -79,8 +56,8 @@ ${TOOL_NAME}() {
     git add .
     git commit -m \"\$commit_message\"
 
-    # Rebase with the loading spinner
-    (git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1 && show_loader) &
+    # Rebase without the loading spinner
+    git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1
 
     # Check if there were conflicts during rebase
     if [ $? -eq 0 ]; then
@@ -96,8 +73,7 @@ ${TOOL_NAME}() {
     fi
 
     # Push changes
-    (git push \"\$remote\" \"\$branch\" > /dev/null 2>&1 && show_loader)
-    
+    git push \"\$remote\" \"\$branch\" > /dev/null 2>&1
     echo -e \"${COLOR_GREEN}Changes successfully pushed to \$remote/\$branch.${COLOR_RESET}\n\"
 }
 "

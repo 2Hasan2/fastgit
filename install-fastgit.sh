@@ -25,70 +25,73 @@ fi
 FASTGIT_FUNCTION="
 # ${TOOL_NAME} function
 ${TOOL_NAME}() {
-    if [ -z \"\$1\" ]; then
-        commit_message=\"\$(date +'%Y-%m-%d %I:%M %p')\"
-    else
-        commit_message=\"\$1\"
-    fi
+    case \$1 in
+        clone)
+            if [ -z \"\$2\" ]; then
+                echo -e \"${COLOR_RED}Please provide a repository URL.${COLOR_RESET}\"
+                return 1
+            fi
 
-    remote=\"origin\"
-    branch=\"main\"
+            repo_url=\"\$2\"
 
-    if [ -n \"\$2\" ]; then
-        remote=\"\$2\"
-    fi
+            # Clone repository
+            echo -e -n \"${COLOR_YELLOW}Cloning repository from \$repo_url.${COLOR_RESET} \n\"
+            git clone \"\$repo_url\" .
+            printf \"\n\"
+            ;;
+        *)
+            if [ -z \"\$1\" ]; then
+                echo -e \"${COLOR_RED}Please provide a commit message.${COLOR_RESET}\"
+                return 1
+            fi
 
-    if [ -n \"\$3\" ]; then
-        branch=\"\$3\"
-    elif git -C . rev-parse --verify main > /dev/null 2>&1; then
-        branch=\"main\"
-    else
-        branch=\"master\"
-    fi
+            commit_message=\"\$1\"
 
-    # Check if the current directory is a Git repository
-    if [ ! -e \".git\" ]; then
-        echo -e \"${COLOR_RED}Not a Git repository. Skipping Git operations.${COLOR_RESET}\"
-        return 1
-    fi
+            # Check if the current directory is a Git repository
+            if [ ! -e \".git\" ]; then
+                echo -e \"${COLOR_RED}Not a Git repository. Skipping Git operations.${COLOR_RESET}\"
+                return 1
+            fi
 
-    # Perform Git operations
-    git add .
-    git commit -m \"\$commit_message\"
+            # Perform Git operations
+            git add .
+            git commit -m \"\$commit_message\"
 
-    # Rebase with a loading spinner
-    echo -e -n \"${COLOR_YELLOW}Rebasing with remote commits.${COLOR_RESET} \n\"
-    i=0 
-    while kill -0 \$! >/dev/null 2>&1; do
-        i=\$(( (i+1) % 4 ))
-        printf \"\b%s\" \"\${spin:\$i:1}\"
-        sleep 0.1
-    done
-    printf \"\b\n\"
-
-    # Check if there were conflicts during rebase
-    if git pull --rebase \"\$remote\" \"\$branch\" > /dev/null 2>&1; then
-        echo -e \"${COLOR_GREEN}Changes successfully rebased with remote commits.${COLOR_RESET}\n\"
-    else
-        echo -e \"${COLOR_RED}Failed to rebase changes. Resolve conflicts.${COLOR_RESET}\n\"
-        # Fetch commits from the remote repository only if there was a conflict during rebase
-        if [ -n \"\$(git status --porcelain | grep '^UU')\" ]; then
-            echo -e -n \"${COLOR_YELLOW}Fetching remote commits${COLOR_RESET} \"
-            spin='-\|/'
-            i=0
-            git fetch \"\$remote\" \"\$branch\" >/dev/null 2>&1 &
+            # Rebase with a loading spinner
+            echo -e -n \"${COLOR_YELLOW}Rebasing with remote commits.${COLOR_RESET} \n\"
+            i=0 
             while kill -0 \$! >/dev/null 2>&1; do
                 i=\$(( (i+1) % 4 ))
                 printf \"\b%s\" \"\${spin:\$i:1}\"
                 sleep 0.1
             done
             printf \"\b\n\"
-        fi
-    fi
 
-    # Push changes
-    # git push \"\$remote\" \"\$branch\" > /dev/null 2>&1
-    echo -e \"${COLOR_GREEN}Changes successfully pushed to \$remote/\$branch.${COLOR_RESET}\n\"
+            # Check if there were conflicts during rebase
+            if git pull --rebase > /dev/null 2>&1; then
+                echo -e \"${COLOR_GREEN}Changes successfully rebased with remote commits.${COLOR_RESET}\n\"
+            else
+                echo -e \"${COLOR_RED}Failed to rebase changes. Resolve conflicts.${COLOR_RESET}\n\"
+                # Fetch commits from the remote repository only if there was a conflict during rebase
+                if [ -n \"\$(git status --porcelain | grep '^UU')\" ]; then
+                    echo -e -n \"${COLOR_YELLOW}Fetching remote commits${COLOR_RESET} \"
+                    spin='-\|/'
+                    i=0
+                    git fetch origin main >/dev/null 2>&1 &
+                    while kill -0 \$! >/dev/null 2>&1; do
+                        i=\$(( (i+1) % 4 ))
+                        printf \"\b%s\" \"\${spin:\$i:1}\"
+                        sleep 0.1
+                    done
+                    printf \"\b\n\"
+                fi
+            fi
+
+            # Push changes
+            git push origin main > /dev/null 2>&1
+            echo -e \"${COLOR_GREEN}Changes successfully pushed to origin/main.${COLOR_RESET}\n\"
+            ;;
+    esac
 }
 "
 

@@ -58,8 +58,8 @@ ${TOOL_NAME}() {
 
     # Rebase with a loading spinner
     echo -e -n \"${COLOR_YELLOW}Rebasing with remote commits${COLOR_RESET} \"
-    i=0 &
-    while kill -0 \$! >/dev/null 2>&1; do
+    i=0
+   while kill -0 \$! >/dev/null 2>&1; do
         i=\$(( (i+1) % 4 ))
         printf \"\b%s\" \"\${spin:\$i:1}\"
         sleep 0.1
